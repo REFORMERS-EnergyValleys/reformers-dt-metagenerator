@@ -1,0 +1,6 @@
+# package testing
+tests
+**.pytest_cache
+
+# Python bytecode cache
+**__pycache__

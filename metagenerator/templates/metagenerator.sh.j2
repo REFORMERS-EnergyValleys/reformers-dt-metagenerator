@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#------------------------------------------------
+# Specify parameters for the metagenerator setup.
+#------------------------------------------------
+GENERATOR_NAME={{ generator_name|e }}
+GENERATOR_TAG={{ generator_tag|e }}
+{%- for key, value in generator_config.items() %}
+{{ key }}=${ {{- key|e -}}:-{{- value|e -}} }
+{%- endfor %}
+
+#-------------------------------------
+# Check for mandatory build arguments.
+#-------------------------------------
+mandatory_args="GENERATOR_NAME GENERATOR_TAG GENERATOR_REGISTRY METAGENERATOR_BUILD_CONTEXT MODEL_SRC"
+for arg in $mandatory_args; do
+    eval val=\$$arg
+    if [ -z "$val" ]; then
+      echo Abort model generation: $arg not defined; exit 1
+    fi
+done
+
+#--------------------------------------------------
+# Provide basic information on metagenerator setup.
+#---------------------------------------------------
+echo Build {{ generator_name }}:{{ generator_tag}} with the following metainformation:
+{%- for label in generator_labels %}
+echo - "{{- label|e -}}"
+{%- endfor %}
+
+#----------------------------------------------
+# Use kaniko executor to build the model image.
+#----------------------------------------------
+/kaniko/executor \
+  --dockerfile "/Dockerfile_generator" \
+  --destination "${GENERATOR_REGISTRY}${GENERATOR_REGISTRY:+/}${GENERATOR_NAME}:${GENERATOR_TAG}" \
+  --build-arg GENERATOR_BUILD_CONTEXT=${GENERATOR_BUILD_CONTEXT:-/workspace} \
+  --build-arg MODEL_SRC=${MODEL_SRC} \
+{%- for label in generator_labels %}
+  --label "{{- label|e -}}" \
+{%- endfor %}
+  --context "dir://${METAGENERATOR_BUILD_CONTEXT}" \
+  --ignore-path "${METAGENERATOR_BUILD_CONTEXT}" \
+  --push-retry ${PUSH_RETRY:-1} \
+  --verbosity ${VERBOSITY:-info} \
+  ${EXTRA_FLAGS}

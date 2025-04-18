@@ -1,0 +1,25 @@
+#--------------------------------------------------------
+# Use kaniko executor image for building the model image.
+# The debug image is required because it has a shell, and
+# a shell is required for running the generator script.
+#--------------------------------------------------------
+FROM gcr.io/kaniko-project/executor:debug
+
+ARG GENERATOR_BUILD_CONTEXT=/generator
+WORKDIR ${GENERATOR_BUILD_CONTEXT}
+
+ARG MODEL_SRC=model-src
+ENV MODEL_BUILD_CONTEXT=${GENERATOR_BUILD_CONTEXT}/${MODEL_SRC}
+
+# Specify directory for kaniko to look for the registry credential config file.
+# By default, the working directory is used.
+ENV DOCKER_CONFIG=${GENERATOR_BUILD_CONTEXT}
+
+# Just in case, also copy the generator manifest.
+COPY --chmod=444 GENERATOR-MANIFEST.yml /
+
+# Copy files for model image build process.
+COPY ${MODEL_SRC} ${MODEL_BUILD_CONTEXT}/
+COPY --chmod=544 generator.sh .
+
+ENTRYPOINT [ "./generator.sh" ]

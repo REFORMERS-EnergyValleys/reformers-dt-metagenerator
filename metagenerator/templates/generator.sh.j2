@@ -1,0 +1,66 @@
+#!/bin/sh
+
+#-----------------------------------------------------------------------------
+# Specify parameters for the generator setup. These parameters typically stay
+# the same for different versions of the same model.
+#-----------------------------------------------------------------------------
+GENERATOR_NAME={{ generator_name|e }}
+GENERATOR_TAG={{ generator_tag|e }}
+{%- for key, value in generator_config.items() %}
+{{ key }}=${ {{- key|e -}}:-{{- value|e -}} }
+{%- endfor %}
+
+#------------------------------------------------------------------------
+# Add information about build parameters.
+# These parameters are  typically different for different versions of the
+# same model. When generating the model, you can define environment
+# variables of the same name to change the default values defined here.
+#------------------------------------------------------------------------
+{%- for key, value in generator_parameters.items() %}
+{{ key }}=${ {{- key|e -}}:-{{- value.default|e -}} }
+{%- endfor %}
+
+#-------------------------------------
+# Check for mandatory build arguments.
+#-------------------------------------
+mandatory_args="MODEL_NAME MODEL_TAG MODEL_REGISTRY MODEL_DOCKERFILE MODEL_BUILD_CONTEXT"
+for arg in $mandatory_args; do
+    eval val=\$$arg
+    if [ -z "$val" ]; then
+      echo Abort model generation: $arg not defined; exit 1
+    fi
+done
+
+#-----------------------------------------------------
+# Provide basic information on model generation setup.
+#-----------------------------------------------------
+
+echo Run generator {{ generator_name }}:{{ generator_tag}} with the following parameters:
+{%- for key, value in generator_config.items() %}
+echo - {{ key|e }}: ${ {{- key|e -}} }
+{%- endfor %}
+{%- for key, value in generator_parameters.items() %}
+echo - {{ key|e }}: ${ {{- key|e -}} }
+{%- endfor %}
+
+#----------------------------------------------
+# Use kaniko executor to build the model image.
+#----------------------------------------------
+/kaniko/executor \
+  --dockerfile "${MODEL_DOCKERFILE}" \
+  --destination "${MODEL_REGISTRY}${MODEL_REGISTRY:+/}${GENERATOR_NAME}/${GENERATOR_TAG}/${MODEL_NAME}:${MODEL_TAG}" \
+  --build-arg GENERATOR_NAME=${GENERATOR_NAME} \
+  --build-arg GENERATOR_TAG=${GENERATOR_TAG} \
+  --build-arg MODEL_NAME=${MODEL_NAME} \
+  --build-arg MODEL_TAG=${MODEL_TAG} \
+{%- for key, value in generator_config.items() %}
+  --build-arg {{ key|e }}=${ {{- key|e -}}} \
+{%- endfor %}
+{%- for key, value in generator_parameters.items() %}
+  --build-arg {{ key|e }}=${ {{- key|e -}}} \
+{%- endfor %}
+  --context "dir://${MODEL_BUILD_CONTEXT}" \
+  --ignore-path "${MODEL_BUILD_CONTEXT}" \
+  --push-retry ${PUSH_RETRY:-1} \
+  --verbosity ${VERBOSITY:-info} \
+  ${EXTRA_FLAGS}

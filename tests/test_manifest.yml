@@ -1,0 +1,24 @@
+---
+example-generator:
+  version: v0
+  config:
+    GENERATOR_REGISTRY: reformers-dev.ait.ac.at:8082
+    MODEL_DOCKERFILE: Dockerfile_model
+    MODEL_REGISTRY: reformers-dev.ait.ac.at:8083
+  parameters:
+    CONFIG_FILE:
+      info: path to config file with default values
+      default: /config/config.yml
+    GRID_DATA:
+      info: path to grid data
+      default: /grid_data/grid.json
+    INPUT_STREAM:
+      info: declare name of input stream
+      default: reformers.metering_data.DUMMY1
+    OUTPUT_STREAM_BASE:
+      info: declare name of output stream
+      default: reformers.grid_sim.results
+  build:
+    cache:
+      - python:3.10
+      - python:3.10-slim
