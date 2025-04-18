@@ -26,8 +26,9 @@ RUN poetry bundle venv /app/.venv && \
 FROM python:3.10-slim
 
 # Add annotation for the container registry.
+LABEL org.opencontainers.image.title="metagenerator"
 LABEL org.opencontainers.image.source="https://github.com/REFORMERS-EnergyValleys/reformers-metagenerator"
-LABEL org.opencontainers.image.licenses="BSD 2-Clause"
+LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.description="The metagenerator automates the build process of model generator \
 images for the REFORMERS Digital Twin."
 
