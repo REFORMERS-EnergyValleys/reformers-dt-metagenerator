@@ -54,10 +54,11 @@ echo - {{ key|e }}: ${ {{- key|e -}} }
   --build-arg MODEL_NAME=${MODEL_NAME} \
   --build-arg MODEL_TAG=${MODEL_TAG} \
 {%- for key, value in generator_config.items() %}
-  --build-arg {{ key|e }}=${ {{- key|e -}}} \
+  --build-arg {{ key|e }}=${ {{- key|e -}} } \
 {%- endfor %}
 {%- for key, value in generator_parameters.items() %}
-  --build-arg {{ key|e }}=${ {{- key|e -}}} \
+  --build-arg {{ key|e }}=${ {{- key|e -}} } \
+  --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.{{ key|e }}=${ {{- key|e -}} }" \
 {%- endfor %}
   --context "dir://${MODEL_BUILD_CONTEXT}" \
   --ignore-path "${MODEL_BUILD_CONTEXT}" \
