@@ -9,7 +9,15 @@ The metagenerator automates the build process of model generator container image
 ## Usage
 
 The metagenerator follows a workflow with several steps to build a generator container image.
-This workflow is made accessible to users via a dedicated [metagenerator container image available on GitHub](https://github.com/orgs/REFORMERS-EnergyValleys/packages/container/package/metagenerator).
+This workflow is made accessible to users via a dedicated [metagenerator container image available on GitHub](https://github.com/REFORMERS-EnergyValleys/reformers-dt-metagenerator/pkgs/container/metagenerator).
+
+``` BASH
+docker login ghcr.io
+docker pull ghcr.io/reformers-energyvalleys/metagenerator:release
+docker tag ghcr.io/reformers-energyvalleys/metagenerator:release metagenerator
+```
+
+*NOTE*: A [personal access token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic) is required for authentication to the container image registry.
 
 ### Input to the metagenerator
 
