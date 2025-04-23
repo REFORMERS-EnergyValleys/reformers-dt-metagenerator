@@ -16,7 +16,7 @@ mandatory_args="GENERATOR_NAME GENERATOR_TAG GENERATOR_REGISTRY METAGENERATOR_BU
 for arg in $mandatory_args; do
     eval val=\$$arg
     if [ -z "$val" ]; then
-      echo Abort model generation: $arg not defined; exit 1
+      echo Abort model generation: $arg not defined 1>&2; exit 1
     fi
 done
 

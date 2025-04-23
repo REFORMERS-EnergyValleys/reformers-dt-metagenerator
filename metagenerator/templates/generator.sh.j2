@@ -27,7 +27,7 @@ mandatory_args="MODEL_NAME MODEL_TAG MODEL_REGISTRY MODEL_DOCKERFILE MODEL_BUILD
 for arg in $mandatory_args; do
     eval val=\$$arg
     if [ -z "$val" ]; then
-      echo Abort model generation: $arg not defined; exit 1
+      echo Abort model generation: $arg not defined 1>&2; exit 1
     fi
 done
 
