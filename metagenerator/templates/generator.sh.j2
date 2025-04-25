@@ -10,6 +10,12 @@ GENERATOR_TAG={{ generator_tag|e }}
 {{ key }}=${ {{- key|e -}}:-{{- value|e -}} }
 {%- endfor %}
 
+#-------------------------------------------------------
+# Specify generation time (set current time as default).
+#-------------------------------------------------------
+TIMESTAMP_UTC=$(date -u -Iseconds)
+CREATED=${CREATED:-$TIMESTAMP_UTC}
+
 #------------------------------------------------------------------------
 # Add information about build parameters.
 # These parameters are  typically different for different versions of the
@@ -60,6 +66,7 @@ echo - {{ key|e }}: ${ {{- key|e -}} }
   --build-arg {{ key|e }}=${ {{- key|e -}} } \
   --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.{{ key|e }}=${ {{- key|e -}} }" \
 {%- endfor %}
+  --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.CREATED=${CREATED}" \
   --context "dir://${MODEL_BUILD_CONTEXT}" \
   --ignore-path "${MODEL_BUILD_CONTEXT}" \
   --push-retry ${PUSH_RETRY:-1} \
