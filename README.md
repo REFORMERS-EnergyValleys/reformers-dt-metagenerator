@@ -4,7 +4,7 @@
 
 The metagenerator automates the build process of model generator container images for the [REFORMERS] Digital Twin.
 
-![alt text](img/metagenerator.svg "Title")
+![Cenptual view of the metagenerator workflow](img/metagenerator.svg "Metagenerator for Digital Twin Model Generators")
 
 ## Usage
 
@@ -146,7 +146,7 @@ The `<registry-auth>` provides the docker registry user and password encoded in 
 echo -n <user>:<password> | base64
 ```
 
-### Funding acknowledgement
+## Funding acknowledgement
 
 <img alt="European Flag" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Flag_of_Europe.svg/330px-Flag_of_Europe.svg.png" align="left" style="margin-right: 10px" height="57"/> This development has been supported by the [REFORMERS] project of the European Union’s research and innovation programme Horizon Europe under the grant agreement No.101136211.
 
