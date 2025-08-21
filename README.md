@@ -3,8 +3,9 @@
 ## About
 
 The metagenerator automates the build process of model generator container images for the [REFORMERS] Digital Twin.
+It relies on [kaniko](https://github.com/chainguard-dev/kaniko), a tool to build container images inside another container.
 
-![Cenptual view of the metagenerator workflow](img/metagenerator.svg "Metagenerator for Digital Twin Model Generators")
+![Conceptual view of the metagenerator workflow](img/metagenerator.svg "Metagenerator for Digital Twin Model Generators")
 
 ## Usage
 
@@ -58,7 +59,7 @@ docker run --rm -v <GENERATOR-SOURCE-DIR>:/workspace -v <GENERATOR-REGISTRY-CONF
 Extra flags can be supplied to the metagenerator via environment variable `EXTRA_FLAGS`:
 
 ``` BASH
-export EXTRA_FLAGS="--skip-tls-verify"
+export EXTRA_FLAGS="--skip-tls-verify --cache=true"
 docker run --rm -v <GENERATOR-SOURCE-DIR>:/workspace --env EXTRA_FLAGS metagenerator
 ```
 
@@ -70,11 +71,36 @@ docker run --rm -v <PATH-TO-MANIFEST>:/workspace/GENERATOR-MANIFEST.yml <PATH-TO
 
 ## Build metagenerator image from source
 
-Use the following command to build the metagenerator container image from source:
+A release version of the metagenerator is avilable on the [GitHub container registry](https://github.com/REFORMERS-EnergyValleys/reformers-dt-metagenerator/pkgs/container/metagenerator).
+However, the following command can be used to build the metagenerator container image locally:
 
 ``` BASH
 docker build -t metagenerator .
 ```
+
+## Use the metagenerator to build images locally
+
+By default, the metagenerator will store the newly created generator container image in a container registry.
+However, it can also be configured to store it on a local machine.
+
+Linux:
+``` BASH
+export BUILD_DIR=${PWD}/build
+export IMAGE_TAR_FILE=image.tar
+export EXTRA_FLAGS="$(echo --tar-path /build/${IMAGE_TAR_FILE} --no-push)"
+docker run --rm -v <GENERATOR-SOURCE-DIR>:/workspace -v ${BUILD_DIR}:/build --env EXTRA_FLAGS metagenerator
+docker image load -i ${BUILD_DIR}/${IMAGE_TAR_FILE}
+```
+
+Windows:
+``` CMD
+SET BUILD_DIR=%CD%\build
+SET IMAGE_TAR_FILE=image.tar
+SET EXTRA_FLAGS=--tar-path /build/%IMAGE_TAR_FILE% --no-push
+docker run --rm -v <GENERATOR-SOURCE-DIR>:/workspace -v %BUILD_DIR%:/build --env EXTRA_FLAGS metagenerator
+docker image load -i %BUILD_DIR%\%IMAGE_TAR_FILE%
+```
+
 
 ## Generator manifest reference
 
@@ -111,12 +137,6 @@ example-generator:
     GRID_DATA:
       info: path to grid data
       default: /grid_data/grid.json
-    INPUT_STREAM:
-      info: declare name of input stream
-      default: reformers.metering_data.DUMMY1
-    OUTPUT_STREAM_BASE:
-      info: declare name of output stream
-      default: reformers.grid_sim.results
   build:
     cache:
       - python:3.10
