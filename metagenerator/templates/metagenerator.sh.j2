@@ -25,7 +25,7 @@ done
 #---------------------------------------------------
 echo Build {{ generator_name }}:{{ generator_tag}} with the following metainformation:
 {%- for label in generator_labels %}
-echo - "{{- label|e -}}"
+echo - "{{- label -}}"
 {%- endfor %}
 
 #----------------------------------------------
@@ -37,7 +37,7 @@ echo - "{{- label|e -}}"
   --build-arg GENERATOR_BUILD_CONTEXT=${GENERATOR_BUILD_CONTEXT:-/workspace} \
   --build-arg MODEL_SRC=${MODEL_SRC} \
 {%- for label in generator_labels %}
-  --label "{{- label|e -}}" \
+  --label "{{- label -}}" \
 {%- endfor %}
   --context "dir://${METAGENERATOR_BUILD_CONTEXT}" \
   --ignore-path "${METAGENERATOR_BUILD_CONTEXT}" \

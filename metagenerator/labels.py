@@ -23,7 +23,7 @@ def __to_string(
     Provide a string representation of objects that is adequate for labels.
     """
     if list == type(v):
-        return str(v).replace(' ','').replace('\'','')
+        return str(v).replace(' ','').replace('\'','\\"')
     else:
         return str(v)
 
