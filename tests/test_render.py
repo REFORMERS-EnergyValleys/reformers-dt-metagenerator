@@ -42,11 +42,7 @@ def test_render_metagenerator_script(manifest_file_path):
     name, info = parse_manifest(manifest_file_path)
     labels = labels_from_manifest(name, info)
 
-    print(name, info, labels)
-
     rendered_script = render_metagenerator_script(name, info, labels)
-
-    print(rendered_script)
 
     assert 'GENERATOR_NAME=example-generator' in rendered_script
     assert 'GENERATOR_TAG=v0' in rendered_script
@@ -60,4 +56,4 @@ def test_render_metagenerator_script(manifest_file_path):
     assert '--label "example-generator.v0.parameters.INPUT_STREAM.default=reformers.metering_data.DUMMY1"' in rendered_script
     assert '--label "example-generator.v0.parameters.OUTPUT_STREAM_BASE.info=declare name of output stream"' in rendered_script
     assert '--label "example-generator.v0.parameters.OUTPUT_STREAM_BASE.default=reformers.grid_sim.results"' in rendered_script
-    assert '--label "example-generator.v0.build.cache=[python:3.10,python:3.10-slim]"' in rendered_script
+    assert '--label "example-generator.v0.build.cache=[\\"python:3.10\\",\\"python:3.10-slim\\"]"' in rendered_script

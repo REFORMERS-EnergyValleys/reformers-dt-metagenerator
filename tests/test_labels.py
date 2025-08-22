@@ -33,4 +33,4 @@ def test_render_script(manifest_file_path):
     assert 'example-generator.v0.parameters.INPUT_STREAM.default=reformers.metering_data.DUMMY1' in labels
     assert 'example-generator.v0.parameters.OUTPUT_STREAM_BASE.info=declare name of output stream' in labels
     assert 'example-generator.v0.parameters.OUTPUT_STREAM_BASE.default=reformers.grid_sim.results' in labels
-    assert 'example-generator.v0.build.cache=[python:3.10,python:3.10-slim]' in labels
+    assert 'example-generator.v0.build.cache=[\\"python:3.10\\",\\"python:3.10-slim\\"]' in labels
