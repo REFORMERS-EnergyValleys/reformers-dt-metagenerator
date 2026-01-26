@@ -25,6 +25,9 @@ CREATED=${CREATED:-$TIMESTAMP_UTC}
 {%- for key, value in generator_parameters.items() %}
 {{ key }}=${ {{- key|e -}}:-{{- value.default|e -}} }
 {%- endfor %}
+{%- for key, value in generator_optional.items() %}
+{{ key }}=${ {{- key|e -}}:-{{- value.default|e -}} }
+{%- endfor %}
 
 #-------------------------------------
 # Check for mandatory build arguments.
@@ -48,6 +51,9 @@ echo - {{ key|e }}: ${ {{- key|e -}} }
 {%- for key, value in generator_parameters.items() %}
 echo - {{ key|e }}: ${ {{- key|e -}} }
 {%- endfor %}
+{%- for key, value in generator_optional.items() %}
+echo - {{ key|e }}: ${ {{- key|e -}} }
+{%- endfor %}
 
 #----------------------------------------------
 # Use kaniko executor to build the model image.
@@ -65,6 +71,9 @@ echo - {{ key|e }}: ${ {{- key|e -}} }
 {%- for key, value in generator_parameters.items() %}
   --build-arg {{ key|e }}=${ {{- key|e -}} } \
   --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.{{ key|e }}=${ {{- key|e -}} }" \
+{%- endfor %}
+{%- for key, value in generator_optional.items() %}
+  --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.optional.{{ key|e }}=${ {{- key|e -}} }" \
 {%- endfor %}
   --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.CREATED=${CREATED}" \
   --context "dir://${MODEL_BUILD_CONTEXT}" \

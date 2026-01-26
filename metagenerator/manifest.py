@@ -31,6 +31,12 @@ def __validate_manifest(
                     'default': str,
                     }),
                 }),
+            Optional('optional'): Schema({
+                str: Schema({
+                    'info': str,
+                    'default': str,
+                    }),
+                }),
             Optional('build'): object,
             })
         })

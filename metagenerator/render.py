@@ -24,7 +24,8 @@ def render_generator_script(
         generator_name=generator_name,
         generator_tag=generator_info['version'],
         generator_config=generator_info['config'],
-        generator_parameters=generator_info['parameters'],
+        generator_parameters=generator_info.get('parameters', {}),
+        generator_optional=generator_info.get('optional', {})
     )
 
 def render_metagenerator_script(

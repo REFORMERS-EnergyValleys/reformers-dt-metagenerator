@@ -22,6 +22,7 @@ def test_render_generator_script(manifest_file_path):
     assert 'GRID_DATA=${GRID_DATA:-/grid_data/grid.json}' in rendered_script
     assert 'INPUT_STREAM=${INPUT_STREAM:-reformers.metering_data.DUMMY1}' in rendered_script
     assert 'OUTPUT_STREAM_BASE=${OUTPUT_STREAM_BASE:-reformers.grid_sim.results}' in rendered_script
+    assert 'KNOWLEDGE_GRAPH_ENABLED=${KNOWLEDGE_GRAPH_ENABLED:-false}' in rendered_script
     assert 'Run generator example-generator:v0 with the following parameters:' in rendered_script
     assert 'echo - GENERATOR_REGISTRY: ${GENERATOR_REGISTRY}' in rendered_script
     assert 'echo - MODEL_REGISTRY: ${MODEL_REGISTRY}' in rendered_script
@@ -30,6 +31,7 @@ def test_render_generator_script(manifest_file_path):
     assert 'echo - GRID_DATA: ${GRID_DATA}' in rendered_script
     assert 'echo - INPUT_STREAM: ${INPUT_STREAM}' in rendered_script
     assert 'echo - OUTPUT_STREAM_BASE: ${OUTPUT_STREAM_BASE}' in rendered_script
+    assert 'echo - KNOWLEDGE_GRAPH_ENABLED: ${KNOWLEDGE_GRAPH_ENABLED}' in rendered_script
     assert '--build-arg GENERATOR_REGISTRY=${GENERATOR_REGISTRY}' in rendered_script
     assert '--build-arg MODEL_REGISTRY=${MODEL_REGISTRY}' in rendered_script
     assert '--build-arg MODEL_DOCKERFILE=${MODEL_DOCKERFILE}' in rendered_script
@@ -56,4 +58,6 @@ def test_render_metagenerator_script(manifest_file_path):
     assert '--label "example-generator.v0.parameters.INPUT_STREAM.default=reformers.metering_data.DUMMY1"' in rendered_script
     assert '--label "example-generator.v0.parameters.OUTPUT_STREAM_BASE.info=declare name of output stream"' in rendered_script
     assert '--label "example-generator.v0.parameters.OUTPUT_STREAM_BASE.default=reformers.grid_sim.results"' in rendered_script
+    assert '--label "example-generator.v0.parameters.optional.KNOWLEDGE_GRAPH_ENABLED.info=enable knowledge graph"' in rendered_script
+    assert '--label "example-generator.v0.parameters.optional.KNOWLEDGE_GRAPH_ENABLED.default=false"' in rendered_script
     assert '--label "example-generator.v0.build.cache=[\\"python:3.10\\",\\"python:3.10-slim\\"]"' in rendered_script

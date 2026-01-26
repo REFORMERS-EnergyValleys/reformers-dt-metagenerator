@@ -33,6 +33,10 @@ def test_parse_manifest(manifest_file_path):
     assert parameters['OUTPUT_STREAM_BASE']['info'] == 'declare name of output stream'
     assert parameters['OUTPUT_STREAM_BASE']['default'] == 'reformers.grid_sim.results'
 
+    optional = info['optional']
+    assert optional['KNOWLEDGE_GRAPH_ENABLED']['info'] == 'enable knowledge graph'
+    assert optional['KNOWLEDGE_GRAPH_ENABLED']['default'] == "false"
+
     build = info['build']
     assert 'python:3.10' in build['cache']
     assert 'python:3.10-slim' in build['cache']

@@ -18,6 +18,10 @@ example-generator:
     OUTPUT_STREAM_BASE:
       info: declare name of output stream
       default: reformers.grid_sim.results
+  optional:
+    KNOWLEDGE_GRAPH_ENABLED:
+      info: enable knowledge graph
+      default: "false"
   build:
     cache:
       - python:3.10

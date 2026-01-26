@@ -41,6 +41,14 @@ def labels_from_manifest(
     except KeyError:
         raise RuntimeError('version not specified in generator manifest')
 
+    # In the manifest file, optional parameters are under 'optional' key.
+    # For labels, we want to have them under 'parameters.optional'.
+    optional = info.pop('optional', {})
+    if optional:
+        if 'parameters' not in info:
+            info['parameters'] = {}
+        info['parameters']['optional'] = optional
+
     fd = __flatten_dict(info, f'{generator_name}.{generator_tag}')
 
     return [f'{k}={__to_string(v)}' for k, v in fd.items()]

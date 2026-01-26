@@ -71,7 +71,7 @@ docker run --rm -v <PATH-TO-MANIFEST>:/workspace/GENERATOR-MANIFEST.yml <PATH-TO
 
 ## Build metagenerator image from source
 
-A release version of the metagenerator is avilable on the [GitHub container registry](https://github.com/REFORMERS-EnergyValleys/reformers-dt-metagenerator/pkgs/container/metagenerator).
+A release version of the metagenerator is available on the [GitHub container registry](https://github.com/REFORMERS-EnergyValleys/reformers-dt-metagenerator/pkgs/container/metagenerator).
 However, the following command can be used to build the metagenerator container image locally:
 
 ``` BASH
@@ -115,7 +115,12 @@ docker image load -i %BUILD_DIR%\%IMAGE_TAR_FILE%
 + `<GENERATOR-NAME>.parameters`:
   Add information about build parameters.
   Each parameter should have a `info` and `default` field, providing information about their use and the default value, respectively.
-  These parameters are  typically different for different versions of the same model.
+  These parameters are typically different for different versions of the same model.
+  When generating the model, you can define environment variables of the same name to change the default values defined here.
++ `<GENERATOR-NAME>.optional`:
+  Optional information about runtime parameters.
+  Each parameter should have a `info` and `default` field, providing information about their use and the default value, respectively.
+  These parameters are typically different for different versions of the same model.
   When generating the model, you can define environment variables of the same name to change the default values defined here.
 + `<GENERATOR-NAME>.build`:
   Optional info for the build process
@@ -137,6 +142,10 @@ example-generator:
     GRID_DATA:
       info: path to grid data
       default: /grid_data/grid.json
+  optional:
+    KNOWLEDGE_GRAPH_ENABLED:
+      info: whether to use knowledge graph for config generation
+      default: "false"
   build:
     cache:
       - python:3.10
