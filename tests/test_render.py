@@ -13,6 +13,8 @@ def test_render_generator_script(manifest_file_path):
 
     rendered_script = render_generator_script(name, info)
 
+    knowledge_graph_endpoint_default = info.get("optional", {}).get("KNOWLEDGE_GRAPH_ENDPOINT", {}).get("default")
+
     assert 'GENERATOR_NAME=example-generator' in rendered_script
     assert 'GENERATOR_TAG=v0' in rendered_script
     assert 'GENERATOR_REGISTRY=${GENERATOR_REGISTRY:-reformers-dev.ait.ac.at:8082}' in rendered_script
@@ -22,16 +24,20 @@ def test_render_generator_script(manifest_file_path):
     assert 'GRID_DATA=${GRID_DATA:-/grid_data/grid.json}' in rendered_script
     assert 'INPUT_STREAM=${INPUT_STREAM:-reformers.metering_data.DUMMY1}' in rendered_script
     assert 'OUTPUT_STREAM_BASE=${OUTPUT_STREAM_BASE:-reformers.grid_sim.results}' in rendered_script
-    assert 'KNOWLEDGE_GRAPH_ENABLED=${KNOWLEDGE_GRAPH_ENABLED:-false}' in rendered_script
     assert 'Run generator example-generator:v0 with the following parameters:' in rendered_script
+    assert 'echo Generator configuration:' in rendered_script
     assert 'echo - GENERATOR_REGISTRY: ${GENERATOR_REGISTRY}' in rendered_script
     assert 'echo - MODEL_REGISTRY: ${MODEL_REGISTRY}' in rendered_script
     assert 'echo - MODEL_DOCKERFILE: ${MODEL_DOCKERFILE}' in rendered_script
+    assert 'echo Generation parameters:' in rendered_script
     assert 'echo - CONFIG_FILE: ${CONFIG_FILE}' in rendered_script
     assert 'echo - GRID_DATA: ${GRID_DATA}' in rendered_script
     assert 'echo - INPUT_STREAM: ${INPUT_STREAM}' in rendered_script
     assert 'echo - OUTPUT_STREAM_BASE: ${OUTPUT_STREAM_BASE}' in rendered_script
-    assert 'echo - KNOWLEDGE_GRAPH_ENABLED: ${KNOWLEDGE_GRAPH_ENABLED}' in rendered_script
+    assert 'echo Runtime parameters:' in rendered_script
+    assert 'echo - KNOWLEDGE_GRAPH_ENABLED' in rendered_script
+    assert 'echo Optional runtime parameters:' in rendered_script
+    assert 'echo - KNOWLEDGE_GRAPH_ENDPOINT: ' + knowledge_graph_endpoint_default in rendered_script
     assert '--build-arg GENERATOR_REGISTRY=${GENERATOR_REGISTRY}' in rendered_script
     assert '--build-arg MODEL_REGISTRY=${MODEL_REGISTRY}' in rendered_script
     assert '--build-arg MODEL_DOCKERFILE=${MODEL_DOCKERFILE}' in rendered_script
@@ -50,14 +56,16 @@ def test_render_metagenerator_script(manifest_file_path):
     assert 'GENERATOR_TAG=v0' in rendered_script
     assert '--label "example-generator.v0.config.MODEL_DOCKERFILE=Dockerfile_model"' in rendered_script
     assert '--label "example-generator.v0.config.MODEL_REGISTRY=reformers-dev.ait.ac.at:8083"' in rendered_script
-    assert '--label "example-generator.v0.parameters.CONFIG_FILE.info=path to config file with default values"' in rendered_script
-    assert '--label "example-generator.v0.parameters.CONFIG_FILE.default=/config/config.yml"' in rendered_script
-    assert '--label "example-generator.v0.parameters.GRID_DATA.info=path to grid data"' in rendered_script
-    assert '--label "example-generator.v0.parameters.GRID_DATA.default=/grid_data/grid.json"' in rendered_script
-    assert '--label "example-generator.v0.parameters.INPUT_STREAM.info=declare name of input stream"' in rendered_script
-    assert '--label "example-generator.v0.parameters.INPUT_STREAM.default=reformers.metering_data.DUMMY1"' in rendered_script
-    assert '--label "example-generator.v0.parameters.OUTPUT_STREAM_BASE.info=declare name of output stream"' in rendered_script
-    assert '--label "example-generator.v0.parameters.OUTPUT_STREAM_BASE.default=reformers.grid_sim.results"' in rendered_script
-    assert '--label "example-generator.v0.parameters.optional.KNOWLEDGE_GRAPH_ENABLED.info=enable knowledge graph"' in rendered_script
-    assert '--label "example-generator.v0.parameters.optional.KNOWLEDGE_GRAPH_ENABLED.default=false"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.CONFIG_FILE.info=path to config file with default values"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.CONFIG_FILE.default=/config/config.yml"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.GRID_DATA.info=path to grid data"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.GRID_DATA.default=/grid_data/grid.json"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.INPUT_STREAM.info=declare name of input stream"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.INPUT_STREAM.default=reformers.metering_data.DUMMY1"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.OUTPUT_STREAM_BASE.info=declare name of output stream"' in rendered_script
+    assert '--label "example-generator.v0.generation_parameters.OUTPUT_STREAM_BASE.default=reformers.grid_sim.results"' in rendered_script
+    assert '--label "example-generator.v0.parameters.KNOWLEDGE_GRAPH_ENABLED.info=enable knowledge graph"' in rendered_script
+    assert '--label "example-generator.v0.parameters.KNOWLEDGE_GRAPH_ENABLED.example=false"' in rendered_script
+    assert '--label "example-generator.v0.parameters.optional.KNOWLEDGE_GRAPH_ENDPOINT.info=endpoint of the knowledge graph database"' in rendered_script
+    assert '--label "example-generator.v0.parameters.optional.KNOWLEDGE_GRAPH_ENDPOINT.default=http://reformers-dev.ait.ac.at/knowledge-graph/repositories/REFORMERS"' in rendered_script
     assert '--label "example-generator.v0.build.cache=[\\"python:3.10\\",\\"python:3.10-slim\\"]"' in rendered_script

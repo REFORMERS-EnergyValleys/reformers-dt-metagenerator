@@ -5,7 +5,7 @@ example-generator:
     GENERATOR_REGISTRY: reformers-dev.ait.ac.at:8082
     MODEL_DOCKERFILE: Dockerfile_model
     MODEL_REGISTRY: reformers-dev.ait.ac.at:8083
-  parameters:
+  generation_parameters:
     CONFIG_FILE:
       info: path to config file with default values
       default: /config/config.yml
@@ -18,10 +18,14 @@ example-generator:
     OUTPUT_STREAM_BASE:
       info: declare name of output stream
       default: reformers.grid_sim.results
-  optional:
+  parameters:
     KNOWLEDGE_GRAPH_ENABLED:
       info: enable knowledge graph
-      default: "false"
+      example: "false"
+  optional:
+    KNOWLEDGE_GRAPH_ENDPOINT:
+      info: endpoint of the knowledge graph database
+      default: http://reformers-dev.ait.ac.at/knowledge-graph/repositories/REFORMERS
   build:
     cache:
       - python:3.10
