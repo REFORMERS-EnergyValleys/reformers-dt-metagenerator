@@ -13,7 +13,7 @@ def __validate_manifest(
     error_generator_name = '\'{}\' is not a valid generator name'
     regex_generator_tag = '^[a-zA-Z0-9][a-zA-Z0-9-]+$'
     error_generator_tag = '\'{}\' is not a valid generator tag'
-    regex_domain_and_port = '^(?:[A-Za-z0-9-]+\.)+[A-Za-z0-9]{1,3}(?::\d{1,5})?$'
+    regex_domain_and_port = '^(?:[A-Za-z0-9-]+\\.)+[A-Za-z0-9]{1,3}(?::\\d{1,5})?$'
     error_domain_and_port = '\'{}\' is not a valid registry descriptor'
 
     schema = Schema({
@@ -25,10 +25,16 @@ def __validate_manifest(
                 'MODEL_DOCKERFILE': str,
                 Optional(str): object,
                 }),
-            'parameters': Schema({
+            Optional('generation_parameters'): Schema({
                 str: Schema({
                     'info': str,
                     'default': str,
+                    }),
+                }),
+            Optional('parameters'): Schema({
+                str: Schema({
+                    'info': str,
+                    'example': str,
                     }),
                 }),
             Optional('optional'): Schema({

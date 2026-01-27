@@ -22,10 +22,7 @@ CREATED=${CREATED:-$TIMESTAMP_UTC}
 # same model. When generating the model, you can define environment
 # variables of the same name to change the default values defined here.
 #------------------------------------------------------------------------
-{%- for key, value in generator_parameters.items() %}
-{{ key }}=${ {{- key|e -}}:-{{- value.default|e -}} }
-{%- endfor %}
-{%- for key, value in generator_optional.items() %}
+{%- for key, value in generation_parameters.items() %}
 {{ key }}=${ {{- key|e -}}:-{{- value.default|e -}} }
 {%- endfor %}
 
@@ -45,14 +42,27 @@ done
 #-----------------------------------------------------
 
 echo Run generator {{ generator_name }}:{{ generator_tag}} with the following parameters:
+echo Generator configuration:
 {%- for key, value in generator_config.items() %}
 echo - {{ key|e }}: ${ {{- key|e -}} }
 {%- endfor %}
-{%- for key, value in generator_parameters.items() %}
+{%- if generation_parameters %}
+echo Generation parameters:
+{%- endif %}
+{%- for key, value in generation_parameters.items() %}
 echo - {{ key|e }}: ${ {{- key|e -}} }
 {%- endfor %}
-{%- for key, value in generator_optional.items() %}
-echo - {{ key|e }}: ${ {{- key|e -}} }
+{%- if parameters %}
+echo Runtime parameters:
+{%- endif %}
+{%- for key, _ in parameters.items() %}
+echo - {{ key|e }}
+{%- endfor %}
+{%- if optional_parameters %}
+echo Optional runtime parameters:
+{%- endif %}
+{%- for key, value in optional_parameters.items() %}
+echo - {{ key|e }}: {{ value.default|e -}}
 {%- endfor %}
 
 #----------------------------------------------
@@ -68,12 +78,15 @@ echo - {{ key|e }}: ${ {{- key|e -}} }
 {%- for key, value in generator_config.items() %}
   --build-arg {{ key|e }}=${ {{- key|e -}} } \
 {%- endfor %}
-{%- for key, value in generator_parameters.items() %}
+{%- for key, value in generation_parameters.items() %}
   --build-arg {{ key|e }}=${ {{- key|e -}} } \
   --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.{{ key|e }}=${ {{- key|e -}} }" \
 {%- endfor %}
-{%- for key, value in generator_optional.items() %}
-  --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.optional.{{ key|e }}=${ {{- key|e -}} }" \
+{%- for key, value in parameters.items() %}
+  --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.parameters.{{ key|e }}={{- value.example|e -}}" \
+{%- endfor %}
+{%- for key, value in optional_parameters.items() %}
+  --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.parameters.optional.{{ key|e }}={{- value.default|e -}}" \
 {%- endfor %}
   --label "${GENERATOR_NAME}.${GENERATOR_TAG}.${MODEL_NAME}.${MODEL_TAG}.CREATED=${CREATED}" \
   --context "dir://${MODEL_BUILD_CONTEXT}" \

@@ -41,7 +41,7 @@ def labels_from_manifest(
     except KeyError:
         raise RuntimeError('version not specified in generator manifest')
 
-    # In the manifest file, optional parameters are under 'optional' key.
+    # In the manifest file, optional runtime parameters are under 'optional' key.
     # For labels, we want to have them under 'parameters.optional'.
     optional = info.pop('optional', {})
     if optional:
