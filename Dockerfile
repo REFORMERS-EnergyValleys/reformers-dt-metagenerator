@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------
 # First build stage: collect dependencies into a virtual environment.
 #--------------------------------------------------------------------
-FROM python:3.10 AS dependency-builder
+FROM python:3.12 AS dependency-builder
 
 ENV POETRY_NO_INTERACTION=1 \
 POETRY_VIRTUALENVS_IN_PROJECT=1 \
@@ -23,7 +23,7 @@ RUN poetry bundle venv /app/.venv && \
 #--------------------------------------------
 # Final build stage: build the runtime image.
 #--------------------------------------------
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Add annotation for the container registry.
 LABEL org.opencontainers.image.title="metagenerator"
