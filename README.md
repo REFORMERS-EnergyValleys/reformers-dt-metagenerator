@@ -112,16 +112,21 @@ docker image load -i %BUILD_DIR%\%IMAGE_TAR_FILE%
   These parameters typically stay the same for different versions of the same model.
   When generating the model, you can define environment variables of the same name to change the default values defined here.
   Mandatory fields are `GENERATOR_REGISTRY` (URL to generator registry), `MODEL_REGISTRY` (URL to model registry, and `MODEL_DOCKERFILE` (Dockerfile for the model build process, relative to model source directory).
-+ `<GENERATOR-NAME>.parameters`:
++ `<GENERATOR-NAME>.generation_parameters` (optional):
   Add information about build parameters.
   Each parameter should have a `info` and `default` field, providing information about their use and the default value, respectively.
   These parameters are typically different for different versions of the same model.
   When generating the model, you can define environment variables of the same name to change the default values defined here.
-+ `<GENERATOR-NAME>.optional`:
-  Optional information about runtime parameters.
++ `<GENERATOR-NAME>.parameters` (optional):
+  Information about mandatory runtime parameters.
+  Each parameter should have a `info` and `example` field, providing information about their use and the expected value, respectively.
+  These parameters are typically different for different versions of the same model.
+  When running the model, you must define environment variables of the same name to change the default values defined here.
++ `<GENERATOR-NAME>.optional` (optional):
+  Information about optional runtime parameters.
   Each parameter should have a `info` and `default` field, providing information about their use and the default value, respectively.
   These parameters are typically different for different versions of the same model.
-  When generating the model, you can define environment variables of the same name to change the default values defined here.
+  When running the model, you may define environment variables of the same name to change the default values defined here.
 + `<GENERATOR-NAME>.build`:
   Optional info for the build process
 
@@ -135,17 +140,21 @@ example-generator:
     GENERATOR_REGISTRY: reformers-dev.ait.ac.at:8082
     MODEL_REGISTRY: reformers-dev.ait.ac.at:8083
     MODEL_DOCKERFILE: Dockerfile_model
-  parameters:
+  generation_parameters:
     CONFIG_FILE:
       info: path to config file with default values
       default: /config/config.yml
     GRID_DATA:
       info: path to grid data
       default: /grid_data/grid.json
-  optional:
+  parameters:
     KNOWLEDGE_GRAPH_ENABLED:
-      info: whether to use knowledge graph for config generation
-      default: "false"
+      info: enable knowledge graph
+      example: "false"
+  optional:
+    KNOWLEDGE_GRAPH_ENDPOINT:
+      info: endpoint of the knowledge graph database
+      default: http://reformers-dev.ait.ac.at/knowledge-graph/repositories/REFORMERS
   build:
     cache:
       - python:3.10
